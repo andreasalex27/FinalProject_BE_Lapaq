@@ -1,5 +1,5 @@
 function spaceSpam(strings){
-    return strings.some(str => str.includes(' '))
+    return strings.some(str => typeof str === "string" && str.includes(' '))
 }
 
 module.exports = {
