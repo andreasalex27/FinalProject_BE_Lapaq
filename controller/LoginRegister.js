@@ -1,4 +1,4 @@
-const User = require("../moduls/Users");
+const User = require("../moduls/UsersBuyer");
 const { responseFailed, responseSuccess } = require("../utils/response");
 const { spaceSpam } = require("../utils/validations");
 const jwt = require("jsonwebtoken");

@@ -1,4 +1,4 @@
-const User = require("../moduls/Users");
+const User = require("../moduls/UsersBuyer");
 const { responseFailed, responseSuccess } = require("../utils/response");
 const { spaceSpam } = require("../utils/validations");
 
@@ -27,10 +27,10 @@ async function editUser(req, res) {
   try {
     const { _id } = req.params;
     const user = await User.findOne({ _id });
-    const { nama_depan, nama_belakang, email, alamat } = req.body;
+    const { nama_depan, nama_belakang, email } = req.body;
 
-    if (spaceSpam([nama_depan, nama_belakang, email, alamat])) {
-      return responseFailed(400, "harapmasukan data dengan benar", res);
+    if (spaceSpam([nama_depan, nama_belakang, email])) {
+      return responseFailed(400, "harap masukan data dengan benar", res);
     }
 
     if (!user) {

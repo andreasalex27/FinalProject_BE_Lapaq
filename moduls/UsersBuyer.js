@@ -23,7 +23,8 @@ const userSchema = mongoose.Schema(
       require: true,
     },
     alamat: {
-      type: String
+      type: String,
+      default: null
     }
   },
   {
