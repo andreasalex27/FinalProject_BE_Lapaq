@@ -4,6 +4,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User_Seller = require("../moduls/UserSeller");
 
+const generatedToken = (user) => {
+  const token = jwt.sign({userId: user._id},'SECRET_KEY', {expiresIn:"1h"})
+  return token
+}
+
 async function registerSeller(req, res) {
 
   try {
@@ -19,12 +24,14 @@ async function registerSeller(req, res) {
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
+    const hashPin = await bcrypt.hash(pin, 10)
+
     if (spaceSpam([email, password, pin])) {
       return responseFailed(400, "Harap masukan data dengan valid", res);
     }
 
     if (typeof pin !== "string" || pin.length !== 5) {
-    return responseFailed(400, "NIK tidak sesuai atau harus berisi 16 karakter", res);
+    return responseFailed(400, "PIN tidak sesuai atau harus berisi 5 angka", res);
     }
 
     const newUser = new User_Seller({
@@ -32,7 +39,7 @@ async function registerSeller(req, res) {
       alamat_toko,
       email: email.toLowerCase(),
       password: hashPassword,
-      pin: hashPassword
+      pin: hashPin
     });
     await newUser.save();
 
@@ -45,6 +52,32 @@ async function registerSeller(req, res) {
   }
 }
 
+async function loginSaller(req, res) {
+  const { email, password, pin } = req.body;
+  try {
+      const user = await User_Seller.findOne({ email });
+      if (!user) {
+          return responseFailed(400, "Kombinasi email, password, dan pin tidak valid", res);
+      }
+
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+          return responseFailed(400, "Kombinasi email, password, dan pin tidak valid", res);
+      }
+
+      const pinMatch = await bcrypt.compare(pin, user.pin);
+      if (!pinMatch) {
+          return responseFailed(400, "Kombinasi email, password, dan pin tidak valid", res);
+      }
+
+      const token = generatedToken(user);
+      responseSuccess(200, { user, token }, "Berhasil login", res);
+  } catch (error) {
+      responseFailed(500, error.message, res);
+  }
+}
+
 module.exports = {
-    registerSeller
+    registerSeller,
+    loginSaller
 }

@@ -27,7 +27,7 @@ async function editUser(req, res) {
   try {
     const { _id } = req.params;
     const user = await User.findOne({ _id });
-    const { nama_depan, nama_belakang, email } = req.body;
+    const { nama_depan, nama_belakang, email, alamat } = req.body;
 
     if (spaceSpam([nama_depan, nama_belakang, email])) {
       return responseFailed(400, "harap masukan data dengan benar", res);
@@ -37,17 +37,17 @@ async function editUser(req, res) {
       return responseFailed(400, "User tidak ditemukan", res);
     }
 
-    if (req.body.nama_depan) {
-      user.nama_depan = req.body.nama_depan;
+    if (nama_depan) {
+      user.nama_depan = nama_depan;
     }
-    if (req.body.nama_belakang) {
-      user.nama_belakang = req.body.nama_belakang;
+    if (nama_belakang) {
+      user.nama_belakang = nama_belakang;
     }
-    if (req.body.email) {
-      user.email = req.body.email.toLowerCase();
+    if (email) {
+      user.email = email.toLowerCase();
     }
-    if (req.body.alamat) {
-      user.alamat = req.body.alamat;
+    if (alamat) {
+      user.alamat = alamat;
     }
 
     await user.save();
