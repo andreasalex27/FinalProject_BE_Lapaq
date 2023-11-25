@@ -33,11 +33,12 @@ async function getDetailKategori(req, res) {
 
 async function addProduct(req, res) {
   try {
-    const { nama_produk, harga, deskripsi, kategori } = req.body;
+    const { nama_produk, harga, deskripsi, kategori, rating } = req.body;
 
     if (!nama_produk || !harga || !deskripsi || !kategori || !req.file) {
-    return responseFailed(400, "error", res)
+      return responseFailed(400, "error", res);
     }
+
     const cloudinaryResult = await upload(req.file.buffer);
 
     const newProduct = new Produk({
@@ -45,18 +46,18 @@ async function addProduct(req, res) {
       harga,
       deskripsi,
       kategori,
-      img: cloudinaryResult.secure_url
+      rating,
+      image: cloudinaryResult.secure_url,
     });
 
     await newProduct.save();
 
-    responseSuccess(200, newProduct, "data berhasil ditambahkan", res)
+    responseSuccess(200, newProduct, "data berhasil ditambahkan", res);
   } catch (error) {
-    responseFailed(500, error.massage, res)
-    console.log(error)
+    responseFailed(500, error.message, res);
+    console.log(error);
   }
 }
-
 module.exports = {
   addProduct,
   getAllProduk,
