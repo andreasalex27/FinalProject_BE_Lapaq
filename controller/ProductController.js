@@ -1,6 +1,6 @@
 const { responseFailed, responseSuccess } = require("../utils/response");
 const Produk = require("../moduls/Products");
-const { upload } = require("../utils/cloudinary");
+const { upload, deleteFile } = require("../utils/cloudinary");
 
 async function getAllProduk(req, res) {
   try {
@@ -58,9 +58,56 @@ async function addProduct(req, res) {
     console.log(error);
   }
 }
+
+async function deleteProduct(req, res) {
+  try {
+    const { _id } = req.params;
+    const product = await Produk.findOne({ _id });
+    if (!product) {
+      responseFailed(400, "produk tidak ditemukan", res);
+    }
+    const fileURL = product.image
+    await product.deleteOne({ _id });
+
+    deleteFile(fileURL)
+    responseSuccess(200, null, "produk berhasil di hapus", res);
+  } catch (error) {
+    responseFailed(500, error.message, res);
+  }
+}
+
+async function editProduct(req,res){
+  try {
+    const {_id} = req.params
+    const product = await Produk.findOne({_id})
+    const {nama_produk, deskripsi, kategori, harga} = req.body
+
+    if(!product){
+      responseFailed(400, "produk tidak ditemukan", res)
+    }
+    if (nama_produk) {
+      product.nama_produk = nama_produk;
+    }
+    if (deskripsi) {
+      product.deskripsi = deskripsi;
+    }
+    if (kategori) {
+      product.kategori = kategori;
+    }
+    if (harga) {
+      product.harga = harga;
+    }
+
+    responseSuccess(200, product, "success di edit", res)
+  } catch (error) {
+    responseFailed(500, error.message, res)
+  }
+}
 module.exports = {
   addProduct,
   getAllProduk,
   getDetailProduk,
   getDetailKategori,
+  deleteProduct,
+  editProduct
 };

@@ -3,7 +3,9 @@ const loginRegister = require("./public/LoginRegister");
 const userBuyer = require('./private/UserBuyer')
 const loginRegisterSeller = require('./private/UserSellerLoginResgister')
 const userSeller = require('./private/UserSaller')
-const produk = require("./private/Produk")
+const produk = require("./public/Produk")
+const comment = require('./public/comments')
+
 router.get("/", (req, res) => {
   res.send("welcome");
 });
@@ -13,5 +15,6 @@ router.use(userBuyer)
 router.use(loginRegisterSeller)
 router.use(userSeller)
 router.use(produk)
+router.use(comment)
 
 module.exports = router;

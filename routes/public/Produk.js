@@ -1,5 +1,6 @@
 const multer = require("multer");
-const { addProduct, getAllProduk, getDetailProduk, getDetailKategori } = require("../../controller/ProductController");
+const { addProduct, getAllProduk, getDetailProduk, getDetailKategori, deleteProduct, editProduct } = require("../../controller/ProductController");
+const authenticateToken = require("../../middleware/Auth");
 const router = require("express").Router();
 
 const storage = multer.memoryStorage();
@@ -9,5 +10,7 @@ router.post("/api/produk", upload.single("image"), addProduct);
 router.get("/api/produk", getAllProduk);
 router.get("/api/produk/:_id", getDetailProduk);
 router.get("/api/produk/kategori/:kategori", getDetailKategori);
+router.delete("/api/produk/:_id",[authenticateToken], deleteProduct);
+router.patch("/api/produk/:_id",[authenticateToken], editProduct);
 
 module.exports = router;
