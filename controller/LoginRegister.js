@@ -92,6 +92,7 @@ async function login(req, res) {
     }
     
     const token = generatedToken(user)
+    res.cookie('token', token);
     responseSuccess(200, {user, token}, "Login berhasil", res);
   } catch (error) {
     console.log(error)

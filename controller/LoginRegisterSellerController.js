@@ -3,7 +3,8 @@ const { spaceSpam } = require("../utils/validations");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User_Seller = require("../moduls/UserSeller");
-const Joi = require('joi')
+const Joi = require('joi');
+const { uploadAvatar } = require("../utils/cloudinary");
 
 const generatedToken = (user) => {
   const token = jwt.sign({userId: user._id},'SECRET_KEY', {expiresIn:"1h"})
@@ -30,6 +31,7 @@ async function registerSeller(req, res) {
      return responseFailed(400, error.message, res)
     }
     const { nama_toko, alamat_toko, email, pin } = value;
+    const cloudinariResult = await uploadAvatar(req.file.buffer)
 
     const existingUser = await User_Seller.findOne({email})
     if(existingUser){
@@ -45,8 +47,9 @@ async function registerSeller(req, res) {
     const newUser = new User_Seller({
       nama_toko: nama_toko,
       alamat_toko: alamat_toko,
-      email: email.toLowerCase(),
-      pin: hashPin
+      email: email,
+      pin: hashPin,
+      avatar: cloudinariResult.secure_url
     });
     await newUser.save();
 
@@ -77,6 +80,8 @@ async function loginSaller(req, res) {
       }
 
       const token = generatedToken(user);
+      res.cookie('token', token, { httpOnly: true });
+
       responseSuccess(200, { user, token }, "Berhasil login", res);
   } catch (error) {
       responseFailed(500, error.message, res);

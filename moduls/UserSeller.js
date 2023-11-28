@@ -17,6 +17,9 @@ const userSchema = mongoose.Schema(
     pin: {
       type: String,
       require: true,
+    },
+    avatar:{
+      type: String
     }
   },
   {
