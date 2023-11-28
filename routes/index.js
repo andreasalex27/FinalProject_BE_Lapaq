@@ -4,7 +4,7 @@ const userBuyer = require('./private/UserBuyer')
 const loginRegisterSeller = require('./private/UserSellerLoginResgister')
 const userSeller = require('./private/UserSaller')
 const produk = require("./public/Produk")
-const comment = require('./public/comments')
+const comment = require('./private/comments')
 
 router.get("/", (req, res) => {
   res.send("welcome");

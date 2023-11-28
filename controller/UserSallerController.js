@@ -1,5 +1,11 @@
 const User_Seller = require("../moduls/UserSeller");
 const { responseSuccess, responseFailed } = require("../utils/response");
+const Joi = require('joi')
+
+const editUserSeller = Joi.object({
+  nama_toko: Joi.string().max(255),
+  alamat: Joi.string()
+})
 
 async function getAllUsers(req, res) {
     try {
@@ -24,9 +30,13 @@ async function getAllUsers(req, res) {
 
   async function updateUser(req, res) {
     try {
+      const {error, value} = editUserSeller.validate(req.body)
+      if(error){
+        return responseFailed(400, error.message, res)
+      }
       const { _id } = req.params;
       const user = await User_Seller.findOne({ _id });
-      const { nama_toko, alamat } = req.body;
+      const { nama_toko, alamat } = value;
   
       if (!user) {
         return responseFailed(400, "User tidak ditemukan", res);

@@ -3,15 +3,32 @@ const { responseFailed, responseSuccess } = require("../utils/response");
 const { spaceSpam } = require("../utils/validations");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const Joi = require('joi')
+
+const registerSchema = Joi.object({
+  nama_depan: Joi.string().max(255).required(),
+  nama_belakang: Joi.string().max(255).required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().min(8).required(),
+  nik: Joi.string().length(16).pattern(/^[0-9]+$/).required(),
+  alamat: Joi.string(),
+});
+
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(8).required(),
+});
 
 async function register(req, res) {
 
   try {
-    const { nama_depan, nama_belakang, email, password, nik, alamat } = req.body;
+    const { error, value } = registerSchema.validate(req.body);
 
-    if(!nama_depan || !nama_belakang || !email || !password || !nik){
-      return responseFailed(400, "Data harus di isi", res)
+    if(error){
+      return responseFailed(400, error.message, res)
     }
+
+    const { nama_depan, nama_belakang, email, password, nik, alamat } = value;
 
     const existingUser = await User.findOne({email})
     if(existingUser){
@@ -33,12 +50,12 @@ async function register(req, res) {
     }
 
     const newUser = new User({
-      nama_depan,
-      nama_belakang,
+      nama_depa: nama_depan,
+      nama_belakang: nama_belakang,
       email: email.toLowerCase(),
       password: hashPassword,
-      nik,
-      alamat,
+      nik: nik,
+      alamat: alamat
     });
     await newUser.save();
 
@@ -56,23 +73,28 @@ const generatedToken = (user) => {
 }
 
 async function login(req, res) {
-  const { email, password } = req.body;
-
   try {
-    const user = await User.findOne({ email });
+    const {error, value} = loginSchema.validate(req.body)
+
+    if(error){
+      return responseFailed(400, error.message, res)
+    }
+
+    const {email, password} = value
+    const user = await User.findOne({email})
+    const passwordMatch = await bcrypt.compare(password, user.password)
 
     if (!user) {
       return responseFailed(401, "Email atau password tidak ditemukan", res);
     }
-  
-    const passwordMatch = await bcrypt.compare(password, user.password)
-  
     if (!passwordMatch) {
       return responseFailed(401, "Email atau password tidak ditemukan", res);
     }
+    
     const token = generatedToken(user)
     responseSuccess(200, {user, token}, "Login berhasil", res);
   } catch (error) {
+    console.log(error)
     responseFailed(500, "terjadi kesalahan server", res)
   }
 }

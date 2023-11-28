@@ -1,12 +1,20 @@
 const User = require("../moduls/UsersBuyer");
 const { responseFailed, responseSuccess } = require("../utils/response");
 const { spaceSpam } = require("../utils/validations");
+const Joi = require('joi')
+
+const editUserSchema = Joi.object({
+  nama_depan: Joi.string().max(255),
+  nama_belakang: Joi.string().max(255),
+  email: Joi.string().email(),
+  alamat: Joi.string().max,
+});
 
 async function getAllUsers(req, res) {
   try {
-    const users = await User.find({});
+    const user = await User.find({});
 
-    responseSuccess(200, users, "Data berhasil ditemukan", res);
+    responseSuccess(200, user, "Data berhasil ditemukan", res);
   } catch (error) {
     responseFailed(400, error.message || "Terjadi kesalahan", res);
   }
@@ -25,17 +33,24 @@ async function getDetailUser(req, res) {
 
 async function editUser(req, res) {
   try {
+    const {error, value} = editUserSchema.validate(req.body)
+    if(error){
+      responseFailed(400, error.message, res)
+    }
     const { _id } = req.params;
     const user = await User.findOne({ _id });
-    const { nama_depan, nama_belakang, email, alamat } = req.body;
+
+    if (!user) {
+      return responseFailed(400, "User tidak ditemukan", res);
+    }
+
+    const { nama_depan, nama_belakang, email, alamat } = value
 
     if (spaceSpam([nama_depan, nama_belakang, email])) {
       return responseFailed(400, "harap masukan data dengan benar", res);
     }
 
-    if (!user) {
-      return responseFailed(400, "User tidak ditemukan", res);
-    }
+    
 
     if (nama_depan) {
       user.nama_depan = nama_depan;
