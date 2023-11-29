@@ -11,6 +11,6 @@ router.get("/api/produk", getAllProduk);
 router.get("/api/produk/:_id", getDetailProduk);
 router.get("/api/produk/kategori/:kategori", getDetailKategori);
 router.delete("/api/produk/:_id",[authenticateToken], deleteProduct);
-router.patch("/api/produk/:_id",[authenticateToken], editProduct);
+router.patch("/api/produk/:_id", editProduct);
 
 module.exports = router;
