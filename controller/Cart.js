@@ -5,15 +5,23 @@ const Produk = require("../moduls/Products");
 
 async function addCart(req, res){
     try {
-        // Pastikan mendapatkan userId dan productId dari permintaan HTTP
-        const { user_buyer_id, produk_id } = req.body;
+        const { user_buyer_id, produk_id, status_code } = req.body;
         const produk = await Produk.findById(produk_id)
-        const hargaProduk = produk.harga;
-        // Pastikan skema Cart konsisten dengan bidang yang digunakan
+        const nama_produk = produk.nama_produk;
+        const harga = produk.harga
+        const image = produk.image
+
+        if(!status_code){
+            return responseFailed(400, "error status code", res)
+        }
+
         const newCartData = {
             user_buyer_id: new mongoose.Types.ObjectId(user_buyer_id),
             produk_id: new mongoose.Types.ObjectId(produk_id),
-            harga: hargaProduk
+            nama_produk: nama_produk, 
+            harga: harga,
+            image: image,
+            status_code: status_code
         };
     
         const newCart = new Cart(newCartData);
@@ -26,6 +34,22 @@ async function addCart(req, res){
     }
 }
 
+async function deleteCart(req, res){
+    try {
+        const {_id} = req.params
+        const cart = await Cart.findOne({_id})
+
+        if(!cart){
+            return responseFailed(400, "id tidak ditemukan", res)
+        }
+        await cart.deleteOne({_id})
+        responseSuccess(200, null, "berhasil di hapus", res)
+    } catch (error) {
+        responseFailed(500, error.message, res)
+    }
+}
+
 module.exports = {
-    addCart
+    addCart,
+    deleteCart
 }

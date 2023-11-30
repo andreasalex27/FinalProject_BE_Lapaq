@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const cartSchema = mongoose.Schema(
+const orderShema = mongoose.Schema(
   {
     user_buyer_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -31,4 +31,4 @@ const cartSchema = mongoose.Schema(
   }
 );
 
-exports.Cart = mongoose.model("Cart", cartSchema);
+exports.Order = mongoose.model("Order", orderShema);

@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const productSchema = mongoose.Schema(
   {
+    seller_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user_sellers",
+      required: true
+    },
     nama_produk: {
       type: String,
       required: true,
@@ -21,6 +26,11 @@ const productSchema = mongoose.Schema(
     rating: {
       type: String,
       default: null
+    },
+    cart_status:{
+      type: String,
+      default: "inactive",
+      required: true
     },
     image:{
       type: String,

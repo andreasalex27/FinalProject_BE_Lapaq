@@ -1,9 +1,12 @@
 const { responseFailed, responseSuccess } = require("../utils/response");
 const Produk = require("../moduls/Products");
 const { upload, deleteFile } = require("../utils/cloudinary");
-const Joi = require('joi')
+const Joi = require('joi');
+const mongoose = require("mongoose");
+const User_Seller = require("../moduls/UserSeller");
 
 const addProductSchema = Joi.object({
+  seller_id: Joi.string().required(),
   nama_produk: Joi.string().max(255).required(),
   harga: Joi.string()
     .pattern(/^[0-9]+([.,][0-9]{1,2})?$/)
@@ -75,11 +78,15 @@ async function addProduct(req, res) {
     if(error){
       return responseFailed(400, error.message, res)
     }
-    const { nama_produk, harga, deskripsi, kategori, rating } = value;
+    const { seller_id, nama_produk, harga, deskripsi, kategori, rating } = value;
+    const existingId = await User_Seller.findOne({_id: seller_id})
+    if(!existingId){
+      return responseFailed(400, "id tidak ditemukan", res)
+    }
 
     const cloudinaryResult = await upload(req.file.buffer);
-
     const newProduct = new Produk({
+      seller_id: new mongoose.Types.ObjectId(seller_id),
       nama_produk: nama_produk,
       harga: harga,
       deskripsi: deskripsi,
@@ -93,7 +100,6 @@ async function addProduct(req, res) {
     responseSuccess(200, newProduct, "data berhasil ditambahkan", res);
   } catch (error) {
     responseFailed(500, error.message, res);
-    console.log(error);
   }
 }
 
