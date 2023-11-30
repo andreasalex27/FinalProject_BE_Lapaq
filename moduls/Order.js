@@ -1,29 +1,40 @@
+const { string } = require("joi");
 const mongoose = require("mongoose");
 
 const orderShema = mongoose.Schema(
   {
     user_buyer_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "users",
       required: true
     },
-    produk_id: {
+    user_seller_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user_sellers",
+      required: true
+    },
+    product_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "products",
       required: true
     },
-    nama_produk: {
+    harga:{
       type: String,
     },
-    harga: {
-      type: String,  
+    total:{
+      type: String
     },
-    image: {
-      type: String, 
-    },
-    status_cart:{
+    metode_pembayaran:{
       type: String,
-      default: "active"
+      required: true
+    },
+    status_order:{
+      type: String,
+      default: "incomplete"
+    },
+    kode_transaksi: {
+      type: String,
+      unique: true
     }
   },
   {

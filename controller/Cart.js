@@ -2,15 +2,25 @@ const mongoose = require("mongoose");
 const { Cart } = require("../moduls/cart");
 const { responseFailed, responseSuccess } = require("../utils/response");
 const Produk = require("../moduls/Products");
+const User = require("../moduls/UsersBuyer")
 
 async function addCart(req, res){
     try {
         const { user_buyer_id, produk_id, status_code } = req.body;
-        const produk = await Produk.findById(produk_id)
-        const nama_produk = produk.nama_produk;
-        const harga = produk.harga
-        const image = produk.image
 
+        const existingId = await User.findOne({_id: user_buyer_id})
+        if(!existingId){
+            return responseFailed(400, "id user tidak ditemukan", res)
+        }
+
+        const existingProduct = await Produk.findOne({_id: produk_id})
+        if(!existingProduct){
+            return responseFailed(400, "id seller tidak ditemukan", res)
+        }
+        const product = await Produk.findById(produk_id)
+        const harga = parseFloat(product.harga)
+        const nama_produk = product.nama_produk
+        const image = product.image
         if(!status_code){
             return responseFailed(400, "error status code", res)
         }
