@@ -59,7 +59,21 @@ async function deleteCart(req, res){
     }
 }
 
+async function listCart(req, res){
+    try {
+        const {user_buyer_id} = req.params
+        const userCart = await Cart.find({user_buyer_id})
+        if(!userCart){
+            return responseFailed(400, "id tidak ada", res)
+        }
+        responseSuccess(200, userCart, "data berhasil di ambil", res)
+    } catch (error) {
+        responseFailed(500, error.message, res)
+    }
+}
+
 module.exports = {
     addCart,
-    deleteCart
+    deleteCart,
+    listCart
 }
