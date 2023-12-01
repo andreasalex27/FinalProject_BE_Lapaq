@@ -8,6 +8,9 @@ const orderShema = mongoose.Schema(
       ref: "users",
       required: true
     },
+    alamat_user:{
+      type: String,
+    },
     user_seller_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user_sellers",

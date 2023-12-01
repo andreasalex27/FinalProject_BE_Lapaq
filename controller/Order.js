@@ -14,6 +14,9 @@ async function addOrder(req, res){
            return responseFailed(400, "id buyer tidak ditemukan", res)
         }
 
+        const user = await User.findById(user_buyer_id)
+        const alamat_user = user.alamat
+
         const existingSeller = await User_Seller.findOne({_id: user_seller_id})
         if(!existingSeller){
             return responseFailed(400, "id seller tidak ditemukan", res)
@@ -34,6 +37,7 @@ async function addOrder(req, res){
         const randomAngka = Math.floor(Math.random() * 99999999999)
         const newOrderData = {
             user_buyer_id: new mongoose.Types.ObjectId(user_buyer_id),
+            alamat_user: alamat_user,
             user_seller_id: new mongoose.Types.ObjectId(user_seller_id),
             product_id: new mongoose.Types.ObjectId(product_id),
             harga: harga.toString(),
