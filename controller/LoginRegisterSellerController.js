@@ -31,7 +31,13 @@ async function registerSeller(req, res) {
      return responseFailed(400, error.message, res)
     }
     const { nama_toko, alamat_toko, email, pin } = value;
-    const cloudinariResult = await uploadAvatar(req.file.buffer)
+    const file = req.file;
+    let avatar = null;
+    if (file) {
+      const cloudinariResult = await uploadAvatar(file.buffer)
+      avatar = cloudinariResult.secure_url 
+    }
+    
 
     const existingUser = await User_Seller.findOne({email})
     if(existingUser){
@@ -49,7 +55,7 @@ async function registerSeller(req, res) {
       alamat_toko: alamat_toko,
       email: email,
       pin: hashPin,
-      avatar: cloudinariResult.secure_url
+      avatar: avatar
     });
     await newUser.save();
 

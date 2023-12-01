@@ -68,7 +68,7 @@ async function register(req, res) {
   }
 }
 const generatedToken = (user) => {
-  const token = jwt.sign({userId: user._id},'SECRET_KEY', {expiresIn:"1h"})
+  const token = jwt.sign({user: user},'SECRET_KEY', {expiresIn:"1d"})
   return token
 }
 
