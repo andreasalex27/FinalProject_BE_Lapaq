@@ -3,8 +3,8 @@ const authenticateToken = require('../../middleware/Auth')
 
 const router = require('express').Router()
 
-router.get('/users/seller', [authenticateToken], getAllUsers)
-router.get('/users/seller/:_id', [authenticateToken],  getDetailUser)
+router.get('/users/seller', getAllUsers)
+router.get('/users/seller/:_id',  getDetailUser)
 router.patch('/users/seller/:_id', [authenticateToken],  updateUser)
 router.delete('/users/seller/:_id', [authenticateToken],  deleteUser)
 
