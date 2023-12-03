@@ -108,12 +108,12 @@ async function deleteProduct(req, res) {
     const { _id } = req.params;
     const product = await Produk.findOne({ _id });
     if (!product) {
-      responseFailed(400, "produk tidak ditemukan", res);
+      return responseFailed(400, "produk tidak ditemukan", res);
     }
     const fileURL = product.image
     await product.deleteOne({ _id });
 
-    deleteFile(fileURL)
+    await deleteFile(fileURL)
     responseSuccess(200, null, "produk berhasil di hapus", res);
   } catch (error) {
     responseFailed(500, error.message, res);
@@ -132,6 +132,14 @@ async function editProduct(req,res){
 
     if(!product){
       return responseFailed(400, "produk tidak ditemukan", res)
+    }
+    if(req.file){
+      const result = await upload(req.file.buffer)
+
+      if(product.image){
+        await deleteFile(product.image)
+      }
+      product.image = result.secure_url
     }
     if (nama_produk) {
       product.nama_produk = nama_produk;
