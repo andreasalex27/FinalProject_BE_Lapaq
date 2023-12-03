@@ -11,6 +11,6 @@ router.get("/api/produk", getAllProduk);
 router.get("/api/produk/:_id", getDetailProduk);
 router.get("/api/produk/kategori/:kategori", getDetailKategori);
 router.delete("/api/produk/:_id", deleteProduct);
-router.patch("/api/produk/:_id", editProduct);
+router.patch("/api/produk/:_id", upload.single("image"), editProduct);
 
 module.exports = router;
