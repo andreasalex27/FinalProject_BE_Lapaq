@@ -27,7 +27,8 @@ async function addCart(req, res){
             produk_id: new mongoose.Types.ObjectId(produk_id),
             nama_produk: nama_produk, 
             harga: harga,
-            image: image
+            image: image,
+            status_cart: "active"
         };
     
         const newCart = new Cart(newCartData);
@@ -58,7 +59,7 @@ async function deleteCart(req, res){
 async function listCart(req, res){
     try {
         const {user_buyer_id} = req.params
-        const userCart = await Cart.find({user_buyer_id})
+        const userCart = await Cart.find({user_buyer_id: user_buyer_id, status_cart: 'active'})
         if(!userCart){
             return responseFailed(400, "id tidak ada", res)
         }

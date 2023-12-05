@@ -4,6 +4,7 @@ const { responseFailed, responseSuccess } = require("../utils/response");
 const mongoose = require("mongoose");
 const { Order } = require("../moduls/Order");
 const User_Seller = require("../moduls/UserSeller");
+const { Cart } = require("../moduls/cart");
 
 async function addOrder(req, res){
     try {
@@ -47,6 +48,18 @@ async function addOrder(req, res){
         } 
         const newOrder = new Order(newOrderData);
         await newOrder.save();
+
+        const cart = await Cart.findOne({
+            produk_id: new mongoose.Types.ObjectId(product_id),
+            user_buyer_id: new mongoose.Types.ObjectId(user_buyer_id)
+        })
+        console.log(product_id, user_buyer_id)
+        console.log(cart)
+        if (cart){
+            cart.status_cart = "inactive"
+            await cart.save()
+        }
+
         responseSuccess(200, newOrder, "success", res)
     } catch (error) {
      responseFailed(500, error.message, res)   
