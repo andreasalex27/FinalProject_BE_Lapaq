@@ -7,7 +7,7 @@ const User_Seller = require("../moduls/UserSeller");
 
 async function addOrder(req, res){
     try {
-        const {user_buyer_id, user_seller_id, product_id, metode_pembayaran, status_order} = req.body
+        const {user_buyer_id, user_seller_id, product_id, metode_pembayaran} = req.body
 
         const existingBuyer = await User.findOne({_id: user_buyer_id})
         if(!existingBuyer){
@@ -43,7 +43,6 @@ async function addOrder(req, res){
             harga: harga.toString(),
             total: total.toString(),
             metode_pembayaran: metode_pembayaran,
-            status_order: status_order,
             kode_transaksi: randomAngka
         } 
         const newOrder = new Order(newOrderData);

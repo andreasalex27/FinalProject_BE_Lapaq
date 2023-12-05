@@ -33,7 +33,7 @@ const orderShema = mongoose.Schema(
     },
     status_order:{
       type: String,
-      default: "incomplete"
+      default: "complete"
     },
     kode_transaksi: {
       type: String,
