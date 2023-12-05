@@ -67,7 +67,21 @@ async function getOrderUser(req, res){
     }
 }
 
+async function getOrderSeller(req, res){
+    try {
+        const {user_seller_id} = req.params
+        const orderSeller = await Order.find({user_seller_id})
+        if(!orderSeller || orderSeller.length === 0){
+            return responseFailed(400, "id tidak ada", res)
+        }
+        responseSuccess(200, orderSeller, "data berhasil ditampilkan", res)
+    } catch (error) {
+        responseFailed(500, error.message, res)
+    }
+}
+
 module.exports = {
     addOrder,
-    getOrderUser
+    getOrderUser,
+    getOrderSeller
 }

@@ -6,7 +6,7 @@ const User = require("../moduls/UsersBuyer")
 
 async function addCart(req, res){
     try {
-        const { user_buyer_id, produk_id, status_code } = req.body;
+        const { user_buyer_id, produk_id } = req.body;
 
         const existingId = await User.findOne({_id: user_buyer_id})
         if(!existingId){
@@ -21,17 +21,13 @@ async function addCart(req, res){
         const harga = parseFloat(product.harga)
         const nama_produk = product.nama_produk
         const image = product.image
-        if(!status_code){
-            return responseFailed(400, "error status code", res)
-        }
 
         const newCartData = {
             user_buyer_id: new mongoose.Types.ObjectId(user_buyer_id),
             produk_id: new mongoose.Types.ObjectId(produk_id),
             nama_produk: nama_produk, 
             harga: harga,
-            image: image,
-            status_code: status_code
+            image: image
         };
     
         const newCart = new Cart(newCartData);

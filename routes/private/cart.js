@@ -3,7 +3,7 @@ const authenticateToken = require('../../middleware/Auth')
 
 const router = require('express').Router()
 
-router.post('/product/cart',[authenticateToken], addCart)
+router.post('/product/cart', [authenticateToken], addCart)
 router.delete('/product/cart/:_id',[authenticateToken], deleteCart)
 router.get('/product/cart/:user_buyer_id', [authenticateToken], listCart)
 
