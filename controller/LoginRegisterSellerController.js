@@ -7,7 +7,7 @@ const Joi = require('joi');
 const { uploadAvatar } = require("../utils/cloudinary");
 
 const generatedToken = (user) => {
-  const token = jwt.sign({user_id: user._id},'SECRET_KEY', {expiresIn:"1h"})
+  const token = jwt.sign({user_id: user._id},'SECRET_KEY', {expiresIn:"1d"})
   return token
 }
 

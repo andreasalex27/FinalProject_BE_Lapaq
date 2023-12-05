@@ -4,7 +4,7 @@ const Joi = require('joi')
 
 const editUserSeller = Joi.object({
   nama_toko: Joi.string().max(255),
-  alamat: Joi.string()
+  alamat_toko: Joi.string()
 })
 
 async function getAllUsers(req, res) {
@@ -36,7 +36,7 @@ async function getAllUsers(req, res) {
       }
       const { _id } = req.params;
       const user = await User_Seller.findOne({ _id });
-      const { nama_toko, alamat } = value;
+      const { nama_toko, alamat_toko } = value;
   
       if (!user) {
         return responseFailed(400, "User tidak ditemukan", res);
@@ -45,8 +45,8 @@ async function getAllUsers(req, res) {
       if (nama_toko) {
         user.nama_toko = nama_toko;
       }
-      if (alamat) {
-        user.alamat = alamat;
+      if (alamat_toko) {
+        user.alamat_toko = alamat_toko;
       }
   
       await user.save();
