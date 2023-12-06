@@ -41,7 +41,7 @@ async function register(req, res) {
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
-    if (spaceSpam([nama_depan, nama_belakang, email, password, alamat])) {
+    if (spaceSpam([nama_depan, nama_belakang, email, password])) {
       return responseFailed(400, "Harap masukan data dengan valid", res);
     }
 
