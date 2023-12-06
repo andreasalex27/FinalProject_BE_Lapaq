@@ -7,7 +7,7 @@ const editUserSchema = Joi.object({
   nama_depan: Joi.string().max(255),
   nama_belakang: Joi.string().max(255),
   email: Joi.string().email(),
-  alamat: Joi.string().max,
+  alamat: Joi.string().max(255),
 });
 
 async function getAllUsers(req, res) {
@@ -35,7 +35,7 @@ async function editUser(req, res) {
   try {
     const {error, value} = editUserSchema.validate(req.body)
     if(error){
-      responseFailed(400, error.message, res)
+      return responseFailed(400, error.message, res)
     }
     const { _id } = req.params;
     const user = await User.findOne({ _id });
